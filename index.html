@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KHOI NGUYEN ACC - Shop Acc Game Tự Động Uy Tín</title>
+    <title>NEXUS ACC - Shop Acc Game Tự Động Uy Tín</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -93,4 +93,610 @@
     </section>
 
     <!-- SHOP SECTION -->
-    <main id="shopSection" class="max
+    <main id="shopSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-10 flex-grow w-full">
+        <!-- Danh mục bộ lọc mới -->
+        <div class="mb-8 bg-darkCard p-4 rounded-2xl border border-darkBorder">
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3"><i class="fa-solid fa-filter text-cyan-400 mr-1"></i> Chọn Danh Mục Game:</p>
+            <div class="flex flex-wrap gap-2" id="gameCategories">
+                <button onclick="filterCategory('all')" class="cat-btn active bg-cyan-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Tất Cả</button>
+                <button onclick="filterCategory('lq_duoi_1m')" class="cat-btn bg-darkBg text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition border border-darkBorder">Liên Quân Dưới 1M</button>
+                <button onclick="filterCategory('lq_1m_5m')" class="cat-btn bg-darkBg text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition border border-darkBorder">Liên Quân 1M - 5M</button>
+                <button onclick="filterCategory('lq_tren_5m')" class="cat-btn bg-darkBg text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition border border-darkBorder">Liên Quân Trên 5M</button>
+                <button onclick="filterCategory('ff_duoi_1m')" class="cat-btn bg-darkBg text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition border border-darkBorder">Free Fire Dưới 1M</button>
+                <button onclick="filterCategory('ff_tren_5m')" class="cat-btn bg-darkBg text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition border border-darkBorder">Free Fire Trên 5M</button>
+                <button onclick="filterCategory('random_lq')" class="cat-btn bg-darkBg text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition border border-darkBorder">Random TTX LQ</button>
+                <button onclick="filterCategory('random_ff')" class="cat-btn bg-darkBg text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition border border-darkBorder">Random TTX FF</button>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="flex justify-between items-center gap-4 mb-8">
+            <div class="relative flex-grow max-w-md">
+                <input type="text" id="searchInput" oninput="renderAccounts()" placeholder="Tìm mã acc, rank, thông số..." class="w-full bg-darkCard border border-darkBorder rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-cyan-500">
+                <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-slate-500 text-sm"></i>
+            </div>
+        </div>
+
+        <!-- Account Grid -->
+        <div id="accountGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-darkCard border-t border-darkBorder mt-12 py-8 text-center text-slate-500 text-sm">
+        <p>&copy; 2026 NEXUS ACC. Hệ thống bán tài khoản game tự động uy tín.</p>
+        <p class="mt-1">Hỗ trợ nhanh 24/7 qua Zalo: <span class="text-cyan-400 font-semibold">0901.175.959</span></p>
+    </footer>
+
+    <!-- MODAL NẠP TIỀN -->
+    <div id="depositModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-darkCard border border-darkBorder rounded-3xl max-w-md w-full p-6 relative neon-glow">
+            <button onclick="closeDepositModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-qrcode text-cyan-400"></i> Nạp Tiền Tự Động Qua QR</h3>
+            <p class="text-slate-400 text-xs mb-6">Quét mã QR bằng App Ngân Hàng hoặc Zalopay. Tiền cộng tự động sau vài giây.</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Nhập số tiền muốn nạp (VNĐ)</label>
+                    <input type="number" id="depositAmount" value="50000" oninput="updateQRCode()" class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-cyan-500 font-bold text-emerald-400">
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center">
+                    <img id="qrImage" src="" alt="VietQR" class="w-56 h-56 object-contain">
+                    <div class="mt-3 text-center text-slate-800 text-xs font-bold space-y-1">
+                        <p>Ví / Ngân hàng: <span id="qrBankName" class="text-blue-600">Zalopay</span></p>
+                        <p>STK: <span id="qrAccountNo" class="text-blue-600 font-mono text-sm">0901175959</span></p>
+                        <p>Chủ TK: <span id="qrAccountName" class="uppercase">NGUYEN DANG KHOI NGUYEN</span></p>
+                        <p>Nội dung CK: <span id="qrMemo" class="text-red-600 font-mono text-sm bg-red-100 px-2 py-0.5 rounded">NAP 9921</span></p>
+                    </div>
+                </div>
+
+                <button onclick="simulateDepositSuccess()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white py-3 rounded-xl font-bold transition shadow-lg shadow-emerald-900/30">
+                    Tôi đã chuyển khoản thành công (Cộng tiền test)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL MUA ACC -->
+    <div id="detailModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-darkCard border border-darkBorder rounded-3xl max-w-xl w-full p-6 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeDetailModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <div id="detailContent"></div>
+        </div>
+    </div>
+
+    <!-- MODAL ADMIN -->
+    <div id="adminModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-darkCard border border-purple-500/50 rounded-3xl max-w-4xl w-full p-6 relative max-h-[90vh] overflow-y-auto neon-glow-purple">
+            <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            
+            <div id="adminLoginScreen" class="py-10 text-center max-w-md mx-auto">
+                <div class="w-16 h-16 bg-purple-500/20 text-purple-400 rounded-2xl mx-auto flex items-center justify-center mb-4 border border-purple-500/30 text-2xl">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3 class="text-2xl font-black mb-2">Khu Vực Quản Trị Viên</h3>
+                <p class="text-slate-400 text-xs mb-6">Nhập mật khẩu quản trị của bạn để tiếp tục.</p>
+                <div class="space-y-4">
+                    <input type="password" id="adminPasswordInput" placeholder="Nhập mật khẩu..." class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 text-center font-mono">
+                    <button onclick="verifyAdminPassword()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white py-3 rounded-xl font-bold transition">
+                        Đăng Nhập
+                    </button>
+                </div>
+            </div>
+
+            <div id="adminDashboardContent" class="hidden">
+                <div class="flex justify-between items-center mb-6 border-b border-darkBorder pb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-purple-400"><i class="fa-solid fa-screwdriver-wrench"></i> Bảng Điều Khiển Chủ Shop</h3>
+                        <p class="text-xs text-slate-400">Đăng tài khoản mật khẩu vào từng danh mục tùy ý.</p>
+                    </div>
+                    <button onclick="logoutAdmin()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-xl text-xs font-semibold transition">
+                        <i class="fa-solid fa-right-from-bracket"></i> Đăng Xuất
+                    </button>
+                </div>
+
+                <div class="flex gap-2 mb-6">
+                    <button onclick="switchAdminTab('add')" id="adminTabAddBtn" class="bg-purple-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Đăng Acc Mới</button>
+                    <button onclick="switchAdminTab('list')" id="adminTabListBtn" class="bg-darkBg text-slate-400 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition border border-darkBorder">Quản Lý Kho Acc</button>
+                    <button onclick="switchAdminTab('settings')" id="adminTabSettingsBtn" class="bg-darkBg text-slate-400 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition border border-darkBorder">Cài Đặt</button>
+                </div>
+
+                <div id="adminTabAdd" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Chọn Danh Mục Hiển Thị</label>
+                            <select id="newCategory" class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-purple-500 font-bold text-cyan-400">
+                                <option value="lq_duoi_1m">Liên Quân Dưới 1M</option>
+                                <option value="lq_1m_5m">Liên Quân 1M - 5M</option>
+                                <option value="lq_tren_5m">Liên Quân Trên 5M</option>
+                                <option value="ff_duoi_1m">Free Fire Dưới 1M</option>
+                                <option value="ff_tren_5m">Free Fire Trên 5M</option>
+                                <option value="random_lq">Random Thử Vận May LQ</option>
+                                <option value="random_ff">Random Thử Vận May FF</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Mã Acc</label>
+                            <input type="text" id="newCode" placeholder="Ví dụ: #LQ8821" class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-purple-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Rank / Mô tả ngắn</label>
+                            <input type="text" id="newRank" placeholder="Ví dụ: Thách Đấu hoặc Random 20k" class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-purple-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Giá Bán (đ)</label>
+                            <input type="number" id="newPrice" placeholder="250000" class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-purple-500 text-yellow-400 font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Giá Gốc (đ)</label>
+                            <input type="number" id="newOriginalPrice" placeholder="500000" class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-purple-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Link Ảnh Minh Họa</label>
+                            <input type="text" id="newImage" placeholder="https://..." class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-purple-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Thông số nổi bật (mỗi dòng 1 ý)</label>
+                        <textarea id="newHighlights" rows="2" placeholder="50 Skin, Full Tướng..." class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-purple-500"></textarea>
+                    </div>
+                    <div class="p-4 bg-purple-950/20 border border-purple-500/30 rounded-2xl">
+                        <label class="block text-xs font-bold text-purple-300 mb-1"><i class="fa-solid fa-key"></i> Tài khoản & Mật khẩu giao tự động</label>
+                        <input type="text" id="newSecret" placeholder="user: khoi123 | pass: matkhauabc" class="w-full bg-darkBg border border-purple-500/50 rounded-xl px-4 py-2 text-sm focus:outline-none text-emerald-400 font-mono">
+                    </div>
+                    <button onclick="addNewAccount()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white py-3 rounded-xl font-bold transition">
+                        Đăng Acc Lên Danh Mục Ngay
+                    </button>
+                </div>
+
+                <div id="adminTabList" class="hidden space-y-4">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-darkBg text-slate-400 text-xs uppercase border-b border-darkBorder">
+                                <tr>
+                                    <th class="p-3">Mã Acc</th>
+                                    <th class="p-3">Danh Mục</th>
+                                    <th class="p-3">Giá Bán</th>
+                                    <th class="p-3">Trạng Thái</th>
+                                    <th class="p-3 text-right">Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminAccountTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="adminTabSettings" class="hidden space-y-4 max-w-md">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Đổi Mật Khẩu Quản Trị Mới</label>
+                        <input type="password" id="settingNewPass" placeholder="Bỏ trống nếu không đổi..." class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Số Tài Khoản Nhận Tiền</label>
+                        <input type="text" id="settingBankNo" value="0901175959" class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-purple-500 font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Ví / Ngân hàng</label>
+                        <input type="text" id="settingBankName" value="Zalopay" class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Tên Chủ Tài Khoản</label>
+                        <input type="text" id="settingAccountName" value="NGUYEN DANG KHOI NGUYEN" class="w-full bg-darkBg border border-darkBorder rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-purple-500 uppercase">
+                    </div>
+                    <button onclick="saveAdminSettings()" class="w-full bg-purple-600 hover:bg-purple-500 text-white py-2.5 rounded-xl font-bold transition text-sm">
+                        Lưu Cài Đặt
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT -->
+    <script>
+        let shopConfig = {
+            adminPass: localStorage.getItem('nexus_admin_pass') || 'knguyen123',
+            bankNo: localStorage.getItem('nexus_bank_no') || '0901175959',
+            bankName: localStorage.getItem('nexus_bank_name') || 'Zalopay',
+            accountName: localStorage.getItem('nexus_account_name') || 'NGUYEN DANG KHOI NGUYEN'
+        };
+
+        let userBalance = 2000000;
+        let currentCategory = 'all';
+
+        let savedAccounts = JSON.parse(localStorage.getItem('nexus_accounts'));
+        let accounts = (savedAccounts && savedAccounts.length > 0) ? savedAccounts : [
+            {
+                id: 1,
+                code: '#LQ8821',
+                category: 'lq_duoi_1m',
+                rank: 'Thách Đấu 50 Sao',
+                price: 280000,
+                originalPrice: 600000,
+                image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&auto=format&fit=crop&q=80',
+                highlights: ['54 Skin Siêu Phẩm', 'Full Tướng 120/120', 'Bảng ngọc chuẩn 90'],
+                secret: 'acc_lienquan_01@gmail.com | Pass: Lq@2026Secure',
+                status: 'available'
+            },
+            {
+                id: 2,
+                code: '#LQ2091',
+                category: 'lq_1m_5m',
+                rank: 'Cao Thủ Full Sân Đấu',
+                price: 1800000,
+                originalPrice: 3500000,
+                image: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=600&auto=format&fit=crop&q=80',
+                highlights: ['150 Skin Độc Quyền', 'Trang phục Collab Hiếm', 'Bảng ngọc max'],
+                secret: 'lq_vip_209@gmail.com | Pass: VipPro#99',
+                status: 'available'
+            },
+            {
+                id: 3,
+                code: '#FF9912',
+                category: 'ff_duoi_1m',
+                rank: 'Huyền Thoại 3 Sao',
+                price: 350000,
+                originalPrice: 800000,
+                image: 'https://images.unsplash.com/photo-1612287233202-b51b36671c5d?w=600&auto=format&fit=crop&q=80',
+                highlights: ['Súng KDP cấp 4', 'Trang phục Nam/Nữ cực chất'],
+                secret: 'ff_user_99@gmail.com | Pass: FreeFire123',
+                status: 'available'
+            },
+            {
+                id: 4,
+                code: '#RNDLQ01',
+                category: 'random_lq',
+                rank: 'Random Thử Vận May LQ',
+                price: 20000,
+                originalPrice: 100000,
+                image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&auto=format&fit=crop&q=80',
+                highlights: ['Tỷ lệ trúng Acc cấp Cao 50%', 'Trắng thông tin 100%'],
+                secret: 'random_lq_acc@gmail.com | Pass: Random2026',
+                status: 'available'
+            }
+        ];
+
+        function saveAccountsToStorage() {
+            localStorage.setItem('nexus_accounts', JSON.stringify(accounts));
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('bg-cyan-500', 'text-white');
+                btn.classList.add('bg-darkBg', 'text-slate-300');
+            });
+            event.target.classList.add('bg-cyan-500', 'text-white');
+            event.target.classList.remove('bg-darkBg', 'text-slate-300');
+            renderAccounts();
+        }
+
+        function renderAccounts() {
+            const grid = document.getElementById('accountGrid');
+            const searchInput = document.getElementById('searchInput');
+            const search = searchInput ? searchInput.value.toLowerCase() : '';
+
+            let filtered = accounts.filter(acc => {
+                const matchCat = currentCategory === 'all' || acc.category === currentCategory;
+                const matchSearch = acc.code.toLowerCase().includes(search) || acc.rank.toLowerCase().includes(search);
+                return matchCat && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500">Chưa có tài khoản nào trong danh mục này!</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(acc => `
+                <div class="bg-darkCard border border-darkBorder rounded-3xl overflow-hidden group hover:border-cyan-500/50 transition duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="relative overflow-hidden aspect-video">
+                            <img src="${acc.image}" alt="Acc" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <span class="absolute top-3 left-3 bg-darkBg/80 backdrop-blur-md text-cyan-400 border border-cyan-500/30 text-xs px-3 py-1 rounded-full font-bold uppercase">${getCategoryName(acc.category)}</span>
+                            <span class="absolute top-3 right-3 bg-purple-500 text-white text-xs px-3 py-1 rounded-full font-extrabold">${acc.code}</span>
+                            ${acc.status === 'sold' ? '<div class="absolute inset-0 bg-black/80 flex items-center justify-center font-black text-red-500 text-xl uppercase tracking-widest">Đã Bán</div>' : ''}
+                        </div>
+                        <div class="p-5">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm font-bold text-slate-200"><i class="fa-solid fa-trophy text-yellow-400 mr-1"></i> ${acc.rank}</span>
+                            </div>
+                            <ul class="space-y-1 mb-4 text-xs text-slate-400">
+                                ${acc.highlights.map(h => `<li><i class="fa-solid fa-check text-emerald-400 mr-1"></i> ${h}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="p-5 pt-0 flex items-center justify-between border-t border-darkBorder/50 mt-4">
+                        <div>
+                            <span class="text-xs text-slate-500 line-through block">${acc.originalPrice.toLocaleString()}đ</span>
+                            <span class="text-lg font-extrabold text-yellow-400">${acc.price.toLocaleString()}đ</span>
+                        </div>
+                        ${acc.status === 'available' ? `
+                            <button onclick="openDetailModal(${acc.id})" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition neon-glow">
+                                Mua Ngay
+                            </button>
+                        ` : `
+                            <button disabled class="bg-darkBg text-slate-600 px-4 py-2 rounded-xl text-xs font-bold cursor-not-allowed">
+                                Hết Hàng
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getCategoryName(cat) {
+            const names = {
+                'lq_duoi_1m': 'LQ Dưới 1M',
+                'lq_1m_5m': 'LQ 1M - 5M',
+                'lq_tren_5m': 'LQ Trên 5M',
+                'ff_duoi_1m': 'FF Dưới 1M',
+                'ff_tren_5m': 'FF Trên 5M',
+                'random_lq': 'Random LQ',
+                'random_ff': 'Random FF'
+            };
+            return names[cat] || 'Game';
+        }
+
+        let selectedAccId = null;
+
+        function openDetailModal(id) {
+            selectedAccId = id;
+            const acc = accounts.find(a => a.id === id);
+            const modal = document.getElementById('detailModal');
+            const content = document.getElementById('detailContent');
+
+            content.innerHTML = `
+                <h3 class="text-xl font-bold mb-4 flex items-center justify-between">
+                    <span>Xác Nhận Mua Tài Khoản <span class="text-cyan-400">${acc.code}</span></span>
+                </h3>
+                <div class="space-y-4 text-sm">
+                    <div class="flex gap-4 items-center bg-darkBg p-3 rounded-2xl border border-darkBorder">
+                        <img src="${acc.image}" class="w-24 h-24 object-cover rounded-xl">
+                        <div>
+                            <p class="font-bold text-slate-200">${getCategoryName(acc.category)} - ${acc.rank}</p>
+                            <p class="text-yellow-400 font-extrabold text-base mt-1">${acc.price.toLocaleString()}đ</p>
+                        </div>
+                    </div>
+                    <div class="bg-yellow-500/10 border border-yellow-500/30 text-yellow-300 p-3 rounded-xl text-xs">
+                        Số dư hiện tại: <b>${userBalance.toLocaleString()}đ</b>. Xác nhận để trừ tiền và nhận thông tin tài khoản.
+                    </div>
+                    <button onclick="confirmPurchase()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white py-3 rounded-xl font-bold transition">
+                        Xác Nhận Thanh Toán Ngay
+                    </button>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        function confirmPurchase() {
+            const acc = accounts.find(a => a.id === selectedAccId);
+            if (userBalance < acc.price) {
+                alert('Số dư không đủ! Vui lòng nạp thêm tiền.');
+                closeDetailModal();
+                openDepositModal();
+                return;
+            }
+
+            userBalance -= acc.price;
+            document.getElementById('userBalance').innerText = userBalance.toLocaleString() + 'đ';
+            acc.status = 'sold';
+            saveAccountsToStorage();
+            renderAccounts();
+
+            document.getElementById('detailContent').innerHTML = `
+                <div class="text-center py-4">
+                    <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl border border-emerald-500/30">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-emerald-400 mb-1">Giao Dịch Thành Công!</h3>
+                    <p class="text-xs text-slate-400 mb-4">Thông tin tài khoản/mật khẩu của bạn:</p>
+                    <div class="bg-darkBg p-4 rounded-2xl border border-emerald-500/50 text-left mb-4">
+                        <div class="bg-black/40 p-3 rounded-xl font-mono text-emerald-400 text-sm select-all border border-darkBorder">
+                            ${acc.secret}
+                        </div>
+                    </div>
+                    <button onclick="closeDetailModal()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-2.5 rounded-xl font-bold transition text-sm">
+                        Đóng
+                    </button>
+                </div>
+            `;
+        }
+
+        function openDepositModal() {
+            document.getElementById('depositModal').classList.remove('hidden');
+            updateQRCode();
+        }
+
+        function closeDepositModal() {
+            document.getElementById('depositModal').classList.add('hidden');
+        }
+
+        function updateQRCode() {
+            const amount = document.getElementById('depositAmount').value || 50000;
+            const memo = 'NAP ' + Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('qrMemo').innerText = memo;
+            document.getElementById('qrBankName').innerText = shopConfig.bankName;
+            document.getElementById('qrAccountNo').innerText = shopConfig.bankNo;
+            document.getElementById('qrAccountName').innerText = shopConfig.accountName;
+
+            const qrUrl = `https://img.vietqr.io/image/${shopConfig.bankName}-${shopConfig.bankNo}-compact2.png?amount=${amount}&addInfo=${encodeURIComponent(memo)}&accountName=${encodeURIComponent(shopConfig.accountName)}`;
+            document.getElementById('qrImage').src = qrUrl;
+        }
+
+        function simulateDepositSuccess() {
+            const amount = parseInt(document.getElementById('depositAmount').value) || 50000;
+            userBalance += amount;
+            document.getElementById('userBalance').innerText = userBalance.toLocaleString() + 'đ';
+            alert(`Nạp thành công ${amount.toLocaleString()}đ!`);
+            closeDepositModal();
+        }
+
+        function openAdminModal() {
+            document.getElementById('adminModal').classList.remove('hidden');
+            if(sessionStorage.getItem('nexus_is_admin') === 'true') {
+                showAdminDashboard();
+            } else {
+                document.getElementById('adminLoginScreen').classList.remove('hidden');
+                document.getElementById('adminDashboardContent').classList.add('hidden');
+            }
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
+        }
+
+        function verifyAdminPassword() {
+            const pass = document.getElementById('adminPasswordInput').value;
+            if (pass === shopConfig.adminPass) {
+                sessionStorage.setItem('nexus_is_admin', 'true');
+                showAdminDashboard();
+            } else {
+                alert('Mật khẩu quản trị không chính xác!');
+            }
+        }
+
+        function showAdminDashboard() {
+            document.getElementById('adminLoginScreen').classList.add('hidden');
+            document.getElementById('adminDashboardContent').classList.remove('hidden');
+            renderAdminAccountList();
+            document.getElementById('settingBankNo').value = shopConfig.bankNo;
+            document.getElementById('settingBankName').value = shopConfig.bankName;
+            document.getElementById('settingAccountName').value = shopConfig.accountName;
+        }
+
+        function logoutAdmin() {
+            sessionStorage.removeItem('nexus_is_admin');
+            document.getElementById('adminLoginScreen').classList.remove('hidden');
+            document.getElementById('adminDashboardContent').classList.add('hidden');
+            document.getElementById('adminPasswordInput').value = '';
+        }
+
+        function switchAdminTab(tab) {
+            document.getElementById('adminTabAdd').classList.add('hidden');
+            document.getElementById('adminTabList').classList.add('hidden');
+            document.getElementById('adminTabSettings').classList.add('hidden');
+
+            document.getElementById('adminTabAddBtn').className = "bg-darkBg text-slate-400 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition border border-darkBorder";
+            document.getElementById('adminTabListBtn').className = "bg-darkBg text-slate-400 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition border border-darkBorder";
+            document.getElementById('adminTabSettingsBtn').className = "bg-darkBg text-slate-400 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition border border-darkBorder";
+
+            if (tab === 'add') {
+                document.getElementById('adminTabAdd').classList.remove('hidden');
+                document.getElementById('adminTabAddBtn').className = "bg-purple-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition";
+            } else if (tab === 'list') {
+                document.getElementById('adminTabList').classList.remove('hidden');
+                document.getElementById('adminTabListBtn').className = "bg-purple-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition";
+                renderAdminAccountList();
+            } else if (tab === 'settings') {
+                document.getElementById('adminTabSettings').classList.remove('hidden');
+                document.getElementById('adminTabSettingsBtn').className = "bg-purple-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition";
+            }
+        }
+
+        function addNewAccount() {
+            const category = document.getElementById('newCategory').value;
+            let code = document.getElementById('newCode').value.trim();
+            const rank = document.getElementById('newRank').value.trim();
+            const price = parseInt(document.getElementById('newPrice').value);
+            const originalPrice = parseInt(document.getElementById('newOriginalPrice').value) || (price * 2);
+            const image = document.getElementById('newImage').value.trim() || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&auto=format&fit=crop&q=80';
+            const highlightsRaw = document.getElementById('newHighlights').value.trim();
+            const secret = document.getElementById('newSecret').value.trim();
+
+            if (!rank || !price || !secret) {
+                alert('Vui lòng điền Rank/Mô tả, Giá bán và Mật khẩu bí mật!');
+                return;
+            }
+
+            if (!code) {
+                code = '#ACC' + Math.floor(1000 + Math.random() * 9000);
+            }
+
+            const highlights = highlightsRaw ? highlightsRaw.split('\n') : ['Full thông tin', 'Bảo hành uy tín'];
+
+            accounts.unshift({
+                id: Date.now(),
+                code,
+                category,
+                rank,
+                price,
+                originalPrice,
+                image,
+                highlights,
+                secret,
+                status: 'available'
+            });
+
+            saveAccountsToStorage();
+            renderAccounts();
+            alert('Đăng tài khoản vào danh mục thành công!');
+            switchAdminTab('list');
+        }
+
+        function renderAdminAccountList() {
+            const tbody = document.getElementById('adminAccountTableBody');
+            tbody.innerHTML = accounts.map(acc => `
+                <tr class="border-b border-darkBorder hover:bg-darkBg/50">
+                    <td class="p-3 font-bold text-purple-400">${acc.code}</td>
+                    <td class="p-3">${getCategoryName(acc.category)}</td>
+                    <td class="p-3 text-yellow-400 font-bold">${acc.price.toLocaleString()}đ</td>
+                    <td class="p-3">
+                        <select onchange="changeAccStatus(${acc.id}, this.value)" class="bg-darkBg border border-darkBorder rounded-lg px-2 py-1 text-xs text-slate-300">
+                            <option value="available" ${acc.status === 'available' ? 'selected' : ''}>Đang bán</option>
+                            <option value="sold" ${acc.status === 'sold' ? 'selected' : ''}>Đã bán</option>
+                        </select>
+                    </td>
+                    <td class="p-3 text-right">
+                        <button onclick="deleteAccount(${acc.id})" class="text-red-400 hover:text-red-300 p-1"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function changeAccStatus(id, status) {
+            const acc = accounts.find(a => a.id === id);
+            if(acc) {
+                acc.status = status;
+                saveAccountsToStorage();
+                renderAccounts();
+            }
+        }
+
+        function deleteAccount(id) {
+            if (confirm('Xóa acc này?')) {
+                accounts = accounts.filter(a => a.id !== id);
+                saveAccountsToStorage();
+                renderAccounts();
+                renderAdminAccountList();
+            }
+        }
+
+        function saveAdminSettings() {
+            const newPass = document.getElementById('settingNewPass').value.trim();
+            const newBankNo = document.getElementById('settingBankNo').value.trim();
+            const newBankName = document.getElementById('settingBankName').value.trim();
+            const newAccountName = document.getElementById('settingAccountName').value.trim().toUpperCase();
+
+            shopConfig.bankNo = newBankNo;
+            shopConfig.bankName = newBankName;
+            shopConfig.accountName = newAccountName;
+
+            localStorage.setItem('nexus_bank_no', newBankNo);
+            localStorage.setItem('nexus_bank_name', newBankName);
+            localStorage.setItem('nexus_account_name', newAccountName);
+
+            if (newPass) {
+                shopConfig.adminPass = newPass;
+                localStorage.setItem('nexus_admin_pass', newPass);
+            }
+
+            alert('Đã lưu cài đặt thành công!');
+        }
+
+        renderAccounts();
+    </script>
+</body>
+</html>
